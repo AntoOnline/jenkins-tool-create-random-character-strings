@@ -27,13 +27,18 @@ pipeline {
                     for (i in 1..password_length_int) {
                         password += chars[(int) (Math.random() * chars.size())]
                     }
+
+                    // Generate password hashes
                     def base64Password = password.bytes.encodeBase64().toString()
                     def sha256Password = java.security.MessageDigest.getInstance("SHA-256").digest(password.getBytes()).encodeHex().toString()
+                    def command = "echo -n '${password}' | md5sum | awk '{print \$1}'"
+                    def md5Password = sh(script: command, returnStdout: true).trim()
 
                     echo "Generated username: ${username}"
                     echo "Generated password (alphanumeric): ${password}"
                     echo "Generated password (base64): ${base64Password}"
                     echo "Generated password (SHA-256): ${sha256Password}"
+                    echo "Generated password (MD5): ${md5Password}"
                 }
             }
         }
